@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
+const { DefinePlugin } = require("webpack");
 
 const PRODUCTS_REMOTE_URL =
   process.env.PRODUCTS_REMOTE_URL ||
@@ -47,6 +48,11 @@ module.exports = {
       cart: `cart@${CART_REMOTE_URL}`,
       account: `account@${ACCOUNT_REMOTE_URL}`,
     },
+  }),
+  new DefinePlugin({
+    "process.env.PRODUCTS_REMOTE_URL": JSON.stringify(PRODUCTS_REMOTE_URL),
+    "process.env.CART_REMOTE_URL": JSON.stringify(CART_REMOTE_URL),
+    "process.env.ACCOUNT_REMOTE_URL": JSON.stringify(ACCOUNT_REMOTE_URL),
   }),
   new HtmlWebpackPlugin({
     template: "./public/index.html",
