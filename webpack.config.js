@@ -2,19 +2,17 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 
-const isProd = process.env.NODE_ENV === "production";
+const PRODUCTS_REMOTE_URL =
+  process.env.PRODUCTS_REMOTE_URL ||
+  "http://localhost:3001/remoteEntry.js";
 
-const PRODUCTS_REMOTE_URL = isProd
-  ? "https://microfe-products.netlify.app/remoteEntry.js"
-  : "http://localhost:3001/remoteEntry.js";
+const CART_REMOTE_URL =
+  process.env.CART_REMOTE_URL ||
+  "http://localhost:3002/remoteEntry.js";
 
-const CART_REMOTE_URL = isProd
-  ? "https://microfe-cart.netlify.app/remoteEntry.js"
-  : "http://localhost:3002/remoteEntry.js";
-
-const ACCOUNT_REMOTE_URL = isProd
-  ? "https://microfe-account.netlify.app/remoteEntry.js"
-  : "http://localhost:3003/remoteEntry.js";
+const ACCOUNT_REMOTE_URL =
+  process.env.ACCOUNT_REMOTE_URL ||
+  "http://localhost:3003/remoteEntry.js";
 
 module.exports = {
   entry: "./src/index.js",
