@@ -17,7 +17,7 @@ const ACCOUNT_REMOTE_URL =
 
 module.exports = {
   entry: "./src/index.js",
-  mode: isProd ? "production" : "development",
+  mode: "development",
   output: {
     publicPath: "auto",
     path: path.resolve(__dirname, "dist"),
