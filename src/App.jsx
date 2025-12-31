@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import Login from "./Login";
 import ProtectedRoute from "./auth/ProtectedRoute";
-import { AuthProvider } from "./auth/AuthContext";
+import { AuthProvider, useAuth } from "./auth/AuthContext";
 
 // Remote components (loaded via Module Federation)
 const ProductsApp = React.lazy(() =>
@@ -25,37 +25,49 @@ const AccountApp = React.lazy(() =>
 );
 
 
-export default function App() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-      <nav className="bg-gray-800 text-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex h-14 items-center justify-between">
-            <div className="text-lg font-semibold">MFE Container</div>
+function AppContent() {
+  const { isAuthenticated } = useAuth();
 
-            <div className="flex space-x-6">
-              <Link to="/" className="hover:text-gray-300 transition">Home</Link>
-              <Link to="/products" className="hover:text-gray-300 transition">Products</Link>
-              <Link to="/cart" className="hover:text-gray-300 transition">Cart</Link>
-              <Link to="/account" className="hover:text-gray-300 transition">Account</Link>
+  return (
+    <>
+      {isAuthenticated && (
+        <nav className="bg-gray-800 text-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex h-14 items-center justify-between">
+              <div className="text-lg font-semibold">MFE Container</div>
+
+              <div className="flex space-x-6">
+                <Link to="/" className="hover:text-gray-300 transition">Home</Link>
+                <Link to="/products" className="hover:text-gray-300 transition">Products</Link>
+                <Link to="/cart" className="hover:text-gray-300 transition">Cart</Link>
+                <Link to="/account" className="hover:text-gray-300 transition">Account</Link>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       <main className="max-w-7xl mx-auto p-4">
         <Suspense fallback={<div>Loading microfrontend...</div>}>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/products" element={<ProductsApp />} />
-            <Route path="/cart" element={<CartApp />} />
-            <Route path="/account" element={<AccountApp />} />
+            <Route path="/products" element={<ProtectedRoute><ProductsApp /></ProtectedRoute>} />
+            <Route path="/cart" element={<ProtectedRoute><CartApp /></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><AccountApp /></ProtectedRoute>} />
           </Routes>
         </Suspense>
       </main>
-    </BrowserRouter>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </AuthProvider>
   );
 }
